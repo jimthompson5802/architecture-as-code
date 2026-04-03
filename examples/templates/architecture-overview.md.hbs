@@ -1,0 +1,20 @@
+## Architecture Overview
+
+{{#if metadata}}
+{{#each metadata}}
+- **{{@key}}:** {{.}}
+{{/each}}
+{{/if}}
+
+{{block-architecture}}
+
+
+## Nodes
+
+{{#each nodes}}
+### {{this.name}}
+{{#if this.description}}
+{{this.description}}
+{{/if}}
+
+{{/each }}
