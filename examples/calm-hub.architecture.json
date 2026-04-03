@@ -4,6 +4,10 @@
     "unique-id": "calm-hub",
     "name": "CALM Hub Architecture",
     "description": "Architecture of the CALM Hub system, comprising a React UI, a Quarkus REST API backend, a MongoDB database, and an optional Keycloak OIDC identity provider.",
+    "metadata": {
+        "name": "CALM Hub Architecture",
+        "description": "Architecture of the CALM Hub system, comprising a React UI, a Quarkus REST API backend, a MongoDB database, and an optional Keycloak OIDC identity provider."
+    },
     "nodes": [
         {
             "unique-id": "calm-hub-ui",
