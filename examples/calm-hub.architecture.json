@@ -44,6 +44,12 @@
             ]
         },
         {
+            "unique-id": "calm-hub-system",
+            "node-type": "system",
+            "name": "CALM Hub",
+            "description": "The CALM Hub system, composed of the UI, API, MongoDB database, and Keycloak identity provider."
+        },
+        {
             "unique-id": "architect",
             "node-type": "actor",
             "name": "Architect",
@@ -63,6 +69,21 @@
         }
     ],
     "relationships": [
+        {
+            "unique-id": "calm-hub-system-composed-of",
+            "description": "CALM Hub is composed of the UI, API, database, and identity provider.",
+            "relationship-type": {
+                "composed-of": {
+                    "container": "calm-hub-system",
+                    "nodes": [
+                        "calm-hub-ui",
+                        "calm-hub-api",
+                        "mongodb",
+                        "keycloak"
+                    ]
+                }
+            }
+        },
         {
             "unique-id": "architect-to-calm-hub-ui",
             "description": "The Architect interacts with the CALM Hub UI to browse and manage CALM artefacts.",
