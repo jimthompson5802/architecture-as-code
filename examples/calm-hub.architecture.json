@@ -50,6 +50,18 @@
             "description": "The CALM Hub system, composed of the UI, API, MongoDB database, and Keycloak identity provider."
         },
         {
+            "unique-id": "traderx-application",
+            "node-type": "system",
+            "name": "TraderX Application",
+            "description": "The TraderX application system, composed of its source code repository and related components."
+        },
+        {
+            "unique-id": "traderx-git-repo",
+            "node-type": "git-repo",
+            "name": "TraderX GIT Repo",
+            "description": "Git repository hosting the TraderX source code."
+        },
+        {
             "unique-id": "architect",
             "node-type": "actor",
             "name": "Architect",
@@ -69,6 +81,18 @@
         }
     ],
     "relationships": [
+        {
+            "unique-id": "traderx-application-composed-of",
+            "description": "TraderX Application is composed of the TraderX Git repository.",
+            "relationship-type": {
+                "composed-of": {
+                    "container": "traderx-application",
+                    "nodes": [
+                        "traderx-git-repo"
+                    ]
+                }
+            }
+        },
         {
             "unique-id": "calm-hub-system-composed-of",
             "description": "CALM Hub is composed of the UI, API, database, and identity provider.",
@@ -140,6 +164,20 @@
                 }
             },
             "protocol": "HTTPS"
+        },
+        {
+            "unique-id": "calm-hub-to-traderx-application",
+            "description": "Architecture governance interactions",
+            "relationship-type": {
+                "connects": {
+                    "source": {
+                        "node": "calm-hub-system"
+                    },
+                    "destination": {
+                        "node": "traderx-application"
+                    }
+                }
+            }
         },
         {
             "unique-id": "calm-hub-api-to-keycloak",
