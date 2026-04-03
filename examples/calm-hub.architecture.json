@@ -1,0 +1,139 @@
+{
+    "$schema": "https://calm.finos.org/release/1.2/meta/calm.json",
+    "calm-version": "1.2.0",
+    "unique-id": "calm-hub",
+    "name": "CALM Hub Architecture",
+    "description": "Architecture of the CALM Hub system, comprising a React UI, a Quarkus REST API backend, a MongoDB database, and an optional Keycloak OIDC identity provider.",
+    "nodes": [
+        {
+            "unique-id": "calm-hub-ui",
+            "node-type": "webclient",
+            "name": "CALM Hub UI",
+            "description": "React single-page application (Vite) that allows users to browse namespaces, patterns, architectures, flows, standards, controls, and decorators stored in the CALM Hub.",
+            "interfaces": [
+                {
+                    "unique-id": "calm-hub-ui-url",
+                    "url": "http://localhost:3000"
+                }
+            ]
+        },
+        {
+            "unique-id": "calm-hub-api",
+            "node-type": "service",
+            "name": "CALM Hub API",
+            "description": "Quarkus JAX-RS REST backend exposing the /calm/** namespace. Serves patterns, architectures, flows, standards, controls, schemas, domains, decorators, ADRs, and user-access resources.",
+            "interfaces": [
+                {
+                    "unique-id": "calm-hub-api-host-port",
+                    "host": "localhost",
+                    "port": 8080
+                }
+            ]
+        },
+        {
+            "unique-id": "mongodb",
+            "node-type": "database",
+            "name": "MongoDB",
+            "description": "MongoDB instance used as the primary persistent storage backend for CALM Hub (database: calmSchemas).",
+            "interfaces": [
+                {
+                    "unique-id": "mongodb-host-port",
+                    "host": "localhost",
+                    "port": 27017
+                }
+            ]
+        },
+        {
+            "unique-id": "architect",
+            "node-type": "actor",
+            "name": "Architect",
+            "description": "A human architect who uses the CALM Hub UI to browse, create, and manage CALM artefacts such as patterns, architectures, and flows."
+        },
+        {
+            "unique-id": "keycloak",
+            "node-type": "service",
+            "name": "Keycloak",
+            "description": "OIDC identity provider for CALM Hub. Used when the secure profile is enabled; the UI performs OIDC sign-in redirects and the API validates JWT tokens against this realm.",
+            "interfaces": [
+                {
+                    "unique-id": "keycloak-url",
+                    "url": "https://calm-hub.finos.org:9443/realms/calm-hub-realm"
+                }
+            ]
+        }
+    ],
+    "relationships": [
+        {
+            "unique-id": "architect-to-calm-hub-ui",
+            "description": "The Architect interacts with the CALM Hub UI to browse and manage CALM artefacts.",
+            "relationship-type": {
+                "interacts": {
+                    "actor": "architect",
+                    "nodes": [
+                        "calm-hub-ui"
+                    ]
+                }
+            }
+        },
+        {
+            "unique-id": "calm-hub-ui-to-api",
+            "description": "The CALM Hub UI calls the CALM Hub REST API over HTTP(S) to fetch and display namespaces, patterns, architectures, flows, standards, controls, and decorators.",
+            "relationship-type": {
+                "connects": {
+                    "source": {
+                        "node": "calm-hub-ui"
+                    },
+                    "destination": {
+                        "node": "calm-hub-api"
+                    }
+                }
+            },
+            "protocol": "HTTPS"
+        },
+        {
+            "unique-id": "calm-hub-api-to-mongodb",
+            "description": "The CALM Hub API persists and retrieves all CALM artefacts (patterns, architectures, flows, etc.) from MongoDB.",
+            "relationship-type": {
+                "connects": {
+                    "source": {
+                        "node": "calm-hub-api"
+                    },
+                    "destination": {
+                        "node": "mongodb"
+                    }
+                }
+            },
+            "protocol": "HTTPS"
+        },
+        {
+            "unique-id": "calm-hub-ui-to-keycloak",
+            "description": "When OIDC authentication is enabled, the CALM Hub UI redirects users to Keycloak for sign-in using the authorisation-code flow.",
+            "relationship-type": {
+                "connects": {
+                    "source": {
+                        "node": "calm-hub-ui"
+                    },
+                    "destination": {
+                        "node": "keycloak"
+                    }
+                }
+            },
+            "protocol": "HTTPS"
+        },
+        {
+            "unique-id": "calm-hub-api-to-keycloak",
+            "description": "When the secure profile is active, the CALM Hub API validates inbound JWT bearer tokens against the Keycloak realm.",
+            "relationship-type": {
+                "connects": {
+                    "source": {
+                        "node": "calm-hub-api"
+                    },
+                    "destination": {
+                        "node": "keycloak"
+                    }
+                }
+            },
+            "protocol": "HTTPS"
+        }
+    ]
+}
