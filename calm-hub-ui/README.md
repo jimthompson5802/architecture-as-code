@@ -67,7 +67,43 @@ npm install
 npm start
 ```
 
-Open [http://localhost:3000](http://localhost:3000) to view the app in your browser. The page will reload when you make changes.
+Open [http://localhost:5173](http://localhost:5173) to view the app in your browser. The page will reload when you make changes.
+
+### Run the UI against a local Calm Hub
+
+There are two common workflows to run the UI against a local Calm Hub backend: a development flow using Vite's proxy, and a production flow where the built UI is served by the Calm Hub service.
+
+- Development (fast, live-reload): Vite proxies relative API calls to the backend (see `proxy` in `package.json`). Start the Calm Hub on port `8080`, then run the UI.
+
+```bash
+# terminal 1 — start Calm Hub (from repo root):
+cd calm-hub
+../mvnw quarkus:dev
+
+# terminal 2 — start UI dev server:
+cd calm-hub-ui
+npm install
+npm start
+# open http://localhost:5173
+```
+
+- Production (serve UI from the backend): build the UI and copy the static files into the Calm Hub so the backend serves the same-origin UI + API.
+
+```bash
+cd calm-hub-ui
+npm install
+npm run prod   # builds and copies files into calm-hub/src/main/resources/META-INF/resources
+
+# then start the Calm Hub so it serves the UI:
+cd ../calm-hub
+../mvnw quarkus:dev
+# open http://localhost:8080/
+```
+
+Notes:
+- The dev server uses the `proxy` entry in `package.json` (defaults to `http://127.0.0.1:8080/`), so API calls in the UI use relative paths like `/calm/namespaces`.
+- If you run tests or Cypress, set `VITE_BASE_URL` as needed (example `.env.example` contains a default).
+- OIDC auth is available but disabled by default; see `src/authService.tsx` for details.
 
 ### 🧪 Running Tests
 
