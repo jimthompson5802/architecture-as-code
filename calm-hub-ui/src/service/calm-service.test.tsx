@@ -82,7 +82,10 @@ describe('CalmService', () => {
 
     describe('fetchArchitectureIDs', () => {
         it('should retrieve architecture IDs for a namespace', async () => {
-            const expectedIds = [5, 6];
+            const expectedIds = [
+                { id: 5, name: 'Architecture 5', description: '' },
+                { id: 6, name: 'Architecture 6', description: '' },
+            ];
             mock.onGet(`/calm/namespaces/${namespace}/architectures`).reply(200, {
                 values: expectedIds,
             });

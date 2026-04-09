@@ -69,7 +69,7 @@ export class CalmService {
         const headers = await getAuthHeaders();
         return this.ax
             .get(`/calm/namespaces/${namespace}/architectures`, { headers })
-            .then((res) => res.data.values.map((id: number) => id.toString()))
+            .then((res) => res.data.values.map((item: { id: number }) => item.id.toString()))
             .catch((error) => {
                 const errorMessage = `Error fetching architecture IDs for namespace ${namespace}:`;
                 // arg1 is %s to prevent format string injection from `namespace`.
