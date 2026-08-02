@@ -251,21 +251,10 @@ export class DocifyTabView {
      * @returns The extracted node ID, or null if extraction fails.
      */
     private extractNodeIdFromMermaidElement(mermaidId: string): string | null {
-        // Remove common Mermaid prefixes
-        let cleaned = mermaidId.replace(/^flowchart-/, '')
-        
-        // Remove trailing numbers (Mermaid appends random numbers)
-        // Match everything except the last segment if it's purely numeric
-        const match = cleaned.match(/^(.+?)-\d+$/)
-        if (match) {
-            cleaned = match[1]
-        }
-        
-        // Remove the node_ prefix if it was added to avoid Mermaid reserved words
-        cleaned = cleaned.replace(/^node_/, '')
+        const match = mermaidId.match(/^mermaid-[^-]+-flowchart-(.+?)(?:-\d+)?$/);
+        if (!match) return null;
 
-        // If no numeric suffix, return the cleaned ID
-        return cleaned || null
+        return match[1].replace(/^node_/, '');
     }
 
     /**
