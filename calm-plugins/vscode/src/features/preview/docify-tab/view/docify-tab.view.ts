@@ -143,12 +143,12 @@ export class DocifyTabView {
         console.log(`[docify-tab] Found ${nodeGroups.length} node groups in diagram`)
         
         nodeGroups.forEach(nodeGroup => {
-            // Extract the node ID from the group's ID attribute
-            // Mermaid generates IDs like "flowchart-conference-website-123" for node "conference-website"
+            // Extract the node ID from the group's Mermaid-generated group ID.
+            // Current IDs look like "mermaid-<diagram-instance>-flowchart-<node-id>" with an optional numeric suffix.
             const fullId = nodeGroup.getAttribute('id')
             if (!fullId) return
 
-            // Extract the actual node ID by removing the diagram prefix and suffix
+            // Normalize the Mermaid element ID back to the CALM node ID.
             const nodeId = this.extractNodeIdFromMermaidElement(fullId)
             if (!nodeId) return
 
@@ -232,28 +232,30 @@ export class DocifyTabView {
     }
 
     /**
-     * Extract CALM node ID from Mermaid-generated element ID.
-     * 
-     * Expected input format: Mermaid typically generates IDs like "flowchart-conference-website-123".
-     * This function removes the "flowchart-" prefix and the trailing numeric suffix.
-     * 
-     * For nodes with reserved words, the ID may be prefixed with "node_" to avoid Mermaid conflicts.
-     * This function removes that prefix to get the original CALM node ID.
-     * 
+     * Extract a CALM node ID from a Mermaid-generated element ID.
+     *
+     * Expected input format: "mermaid-<diagram-instance>-flowchart-<node-id>" with an
+     * optional trailing numeric suffix that Mermaid may append to disambiguate elements.
+     *
+     * For reserved Mermaid keywords, CALM node IDs may be escaped as "node_<node-id>".
+     * This helper removes that escape prefix before returning the original CALM node ID.
+     *
      * Example:
-     *   Input:  "flowchart-conference-website-123"
+     *   Input:  "mermaid-abc123-flowchart-conference-website-7"
      *   Output: "conference-website"
-     *   
-     *   Input:  "flowchart-node_end-user-456"
+     *
+     *   Input:  "mermaid-xyz789-flowchart-node_end-user"
      *   Output: "end-user"
-     * 
+     *
      * @param mermaidId The Mermaid-generated element ID string.
-     * @returns The extracted node ID, or null if extraction fails.
+     * @returns The extracted CALM node ID, or null if extraction fails.
      */
     private extractNodeIdFromMermaidElement(mermaidId: string): string | null {
+        // Capture the CALM node portion after the Mermaid diagram instance + flowchart prefix.
         const match = mermaidId.match(/^mermaid-[^-]+-flowchart-(.+?)(?:-\d+)?$/);
         if (!match) return null;
 
+        // Mermaid escapes reserved keywords by prefixing generated node IDs with "node_".
         return match[1].replace(/^node_/, '');
     }
 
